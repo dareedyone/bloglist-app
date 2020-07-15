@@ -5,12 +5,12 @@ module.exports = {
 		es2020: true,
 		jest: true,
 	},
-	extends: "eslint:recommended",
+	extends: ["eslint:recommended", "prettier"],
 	parserOptions: {
 		ecmaVersion: 11,
 	},
 	rules: {
-		indent: ["error", "tab"],
+		// indent: ["error", "tab"],
 		"linebreak-style": ["error", "windows"],
 		quotes: ["error", "double"],
 		semi: ["error", "always"],

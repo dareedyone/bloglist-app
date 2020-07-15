@@ -3,6 +3,7 @@ const {
 	totalLikes,
 	favoriteBlog,
 	mostBlogs,
+	mostLikes,
 } = require("../utils/list_helper");
 
 const listWithZeroBlog = [];
@@ -137,6 +138,26 @@ describe("most blogs", () => {
 		expect(mostBlogs(listWithManyBlog)).toEqual({
 			author: "Robert C. Martin",
 			blogs: 3,
+		});
+	});
+});
+
+describe("most likes", () => {
+	test("of empty list is undefined", () => {
+		expect(mostLikes(listWithZeroBlog)).toBe(undefined);
+	});
+
+	test("when list has only one blog returns the blog", () => {
+		expect(mostLikes(listWithOneBlog)).toEqual({
+			author: "Edsger W. Dijkstra",
+			likes: 5,
+		});
+	});
+
+	test("of a bigger list is calculated", () => {
+		expect(mostLikes(listWithManyBlog)).toEqual({
+			author: "Edsger W. Dijkstra",
+			likes: 17,
 		});
 	});
 });

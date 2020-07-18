@@ -45,4 +45,10 @@ test("returns the correct amount of blog posts in the JSON format", async () => 
 	expect(blogs).toHaveLength(initialBlogs.length);
 });
 
+test("that the unique identifier property of the blog posts is named id", async () => {
+	const { body } = await api.get("/api/blogs");
+	const firstBlogId = body[0].id;
+	expect(firstBlogId).toBeDefined();
+});
+
 afterAll(() => mongoose.connection.close());

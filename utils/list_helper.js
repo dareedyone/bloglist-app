@@ -1,6 +1,4 @@
-// eslint-disable-next-line no-unused-vars
-const dummy = (blogs) => 1;
-
+const dummy = (_blogs) => 1;
 const totalLikes = (blogs) => blogs.reduce((sum, obj) => sum + obj.likes, 0);
 
 const favoriteBlog = (blogs) =>
@@ -49,4 +47,4 @@ const mostLikes = (blogs) => {
 		: undefined;
 };
 
-module.exports = { dummy, totalLikes, favoriteBlog, mostBlogs, mostLikes };
+module.exports = { totalLikes, favoriteBlog, mostBlogs, mostLikes, dummy };

@@ -9,7 +9,6 @@ const initialBlogs = [
 		title: "React patterns",
 		author: "Michael Chan",
 		url: "https://reactpatterns.com/",
-		likes: 7,
 	},
 	{
 		title: "Go To Statement Considered Harmful",
@@ -68,5 +67,12 @@ test("that making an HTTP POST request to the /api/blogs url successfully create
 
 	expect(body.length).toBe(initialBlogs.length + 1);
 	expect(newResponseTitle).toBe(newBloglist.title);
+});
+
+test("that if the likes property is missing from the request, it will default to the value 0", async () => {
+	const {
+		body: [blogWithoutLike, ..._rest],
+	} = await api.get("/api/blogs");
+	expect(blogWithoutLike.likes).toBe(0);
 });
 afterAll(() => mongoose.connection.close());

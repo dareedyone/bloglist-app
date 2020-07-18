@@ -2,4 +2,11 @@ const unknownEndpoint = (request, response) => {
 	response.status(404).send({ error: "unknown endpoint" });
 };
 
-module.exports = { unknownEndpoint };
+const errorHandler = (err, req, res, next) => {
+	console.log(err.message, err.name);
+	if (err.name === "ValidationError")
+		return res.status(400).send({ error: err.message });
+	next(err);
+};
+
+module.exports = { unknownEndpoint, errorHandler };

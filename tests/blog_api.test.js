@@ -55,7 +55,7 @@ test("that making an HTTP POST request to the /api/blogs url successfully create
 		title: "Cloud is just someone's server",
 		author: "movbe",
 		uri: "somexample.com",
-		likes: 231121,
+		likes: 21,
 	};
 	await api
 		.post("/api/blogs")
@@ -75,4 +75,9 @@ test("that if the likes property is missing from the request, it will default to
 	} = await api.get("/api/blogs");
 	expect(blogWithoutLike.likes).toBe(0);
 });
+
+test(" that if the title and url properties are missing from the request data, the backend responds to the request with the status code 400 Bad Request", async () => {
+	await api.post("/api/blogs").send({}).expect(400);
+});
+
 afterAll(() => mongoose.connection.close());

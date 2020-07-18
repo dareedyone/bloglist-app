@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+mongoose.set("useFindAndModify", false);
 
 const blogSchema = new mongoose.Schema({
 	title: { type: String, required: true },
@@ -6,6 +7,7 @@ const blogSchema = new mongoose.Schema({
 	url: String,
 	likes: { type: Number, default: 0 },
 });
+
 blogSchema.set("toJSON", {
 	transform: (document, returnedObj) => {
 		returnedObj.id = returnedObj._id.toString();

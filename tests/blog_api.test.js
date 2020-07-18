@@ -27,16 +27,16 @@ const initialBlogs = [
 
 beforeEach(async () => {
 	await Blog.deleteMany({});
-	console.log("db cleared");
+	// console.log("db cleared");
 	const blogsToBeSaved = initialBlogs.map((blog) => new Blog(blog));
 	const promises = blogsToBeSaved.map((blog) => blog.save());
 	await Promise.all([promises]);
-	console.log("blogs added");
+	// console.log("blogs added");
 });
 
 describe("when there is initially some notes saved ", () => {
 	test("returns the correct amount of blog posts in the JSON format", async () => {
-		console.log("enter test");
+		// console.log("enter test");
 		const response = await api
 			.get("/api/blogs")
 			.expect(200)
@@ -90,6 +90,17 @@ describe("deletion of a blog", () => {
 		await api.delete(`/api/blogs/${body[0].id}`).expect(204);
 		const blogsAfterDeleting = await api.get("/api/blogs");
 		expect(blogsAfterDeleting.body.length).toBe(body.length - 1);
+	});
+});
+
+describe("editing of a blog", () => {
+	test("ensures note get deleted, with the right status", async () => {
+		const { body } = await api.get("/api/blogs");
+		const blogEdited = await api
+			.put(`/api/blogs/${body[0].id}`)
+			.send({ likes: 100 })
+			.expect(200);
+		expect(body[0].likes).not.toBe(blogEdited.likes);
 	});
 });
 

@@ -51,4 +51,22 @@ test("that the unique identifier property of the blog posts is named id", async 
 	expect(firstBlogId).toBeDefined();
 });
 
+test("that making an HTTP POST request to the /api/blogs url successfully creates a new blog post", async () => {
+	const newBloglist = {
+		title: "Cloud is just someone's server",
+		author: "movbe",
+		uri: "somexample.com",
+		likes: 231121,
+	};
+	await api
+		.post("/api/blogs")
+		.send(newBloglist)
+		.expect(201)
+		.expect("Content-Type", /application\/json/);
+	const { body } = await api.get("/api/blogs");
+	const newResponseTitle = body[initialBlogs.length]["title"];
+
+	expect(body.length).toBe(initialBlogs.length + 1);
+	expect(newResponseTitle).toBe(newBloglist.title);
+});
 afterAll(() => mongoose.connection.close());

@@ -3,6 +3,7 @@ const supertest = require("supertest");
 const app = require("../app");
 const api = supertest(app);
 const Blog = require("../models/blog");
+const User = require("../models/user");
 
 const initialBlogs = [
 	{
@@ -53,6 +54,15 @@ describe("when there is initially some notes saved ", () => {
 });
 
 describe("addition of a new blog", () => {
+	beforeAll(async () => {
+		await User.deleteMany({});
+		const user = new User({
+			username: "root",
+			name: "Super User",
+			passwordHash: "daemon",
+		});
+		await user.save();
+	});
 	test("that making an HTTP POST request to the /api/blogs url successfully creates a new blog post", async () => {
 		const newBloglist = {
 			title: "Cloud is just someone's server",
@@ -81,6 +91,30 @@ describe("addition of a new blog", () => {
 
 	test(" that if the title and url properties are missing from the request data, the backend responds to the request with the status code 400 Bad Request", async () => {
 		await api.post("/api/blogs").send({}).expect(400);
+	});
+
+	test("that a blogs contains information on the creator of the blog", async () => {
+		const {
+			body: [fisrtUser, ..._restUsers],
+		} = await api.get("/api/users");
+
+		const newBloglist = {
+			title: "Test driven development (TDD)",
+			author: "dsk",
+			uri: "somexample.com",
+			likes: 5,
+			user: fisrtUser.id,
+		};
+		const savedBlog = await api
+			.post("/api/blogs")
+			.send(newBloglist)
+			.expect(201)
+			.expect("Content-Type", /application\/json/);
+		expect(savedBlog.body.user).toBe(fisrtUser.id);
+
+		const { body: allBlogs } = await api.get("/api/blogs");
+		const username = allBlogs.map(({ user }) => user?.username);
+		expect(username).toContain(fisrtUser.username);
 	});
 });
 

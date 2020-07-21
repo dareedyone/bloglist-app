@@ -3,9 +3,14 @@ const usersRouter = require("express").Router();
 const bcrypt = require("bcrypt");
 
 usersRouter.post("/", async (req, res) => {
-	const { username, name, password } = req.body;
+	let { username, name, password } = req.body;
 	const saltRounds = 10;
-	const passwordHash = await bcrypt.hash(password, saltRounds);
+	let passwordHash = undefined;
+	//to handle numbers and undefined so byscript hash dont throw errors
+	if (password) {
+		passwordHash =
+			password && (await bcrypt.hash(password.toString(), saltRounds));
+	}
 
 	const savedUser = await new User({ username, name, passwordHash }).save();
 

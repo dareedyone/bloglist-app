@@ -21,6 +21,15 @@ describe("post request to users route", () => {
 			.expect(201)
 			.expect("Content-Type", /application\/json/);
 	});
+
+	test("that invalid users are not created and invalid add user operation returns a suitable status code and error message", async () => {
+		const invalidUser = { username: "ab", name: "tester" };
+		const errMessage = await api
+			.post("/api/users")
+			.send(invalidUser)
+			.expect(400);
+		expect(errMessage.body.error).toMatch(/User validation failed/i);
+	});
 });
 describe("get request to users route", () => {
 	test("that it returns all users available", async () => {
@@ -28,6 +37,7 @@ describe("get request to users route", () => {
 			.get("/api/users")
 			.expect(200)
 			.expect("Content-Type", /application\/json/);
+		// console.log(body);
 	});
 });
 afterAll(async () => {

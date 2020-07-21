@@ -3,7 +3,7 @@ const unknownEndpoint = (request, response) => {
 };
 
 const errorHandler = (err, req, res, next) => {
-	console.log(err.message, err.name);
+	console.log(err.message);
 	if (err.name === "ValidationError")
 		return res.status(400).send({ error: err.message });
 	next(err);

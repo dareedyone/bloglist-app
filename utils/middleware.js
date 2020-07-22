@@ -9,4 +9,12 @@ const errorHandler = (err, req, res, next) => {
 	next(err);
 };
 
-module.exports = { unknownEndpoint, errorHandler };
+const tokenExtractor = (req, res, next) => {
+	const auth = req.get("authorization");
+	const token =
+		auth && auth.toLowerCase().startsWith("bearer ") && auth.substring(7);
+	req.token = token;
+	next();
+};
+
+module.exports = { unknownEndpoint, errorHandler, tokenExtractor };

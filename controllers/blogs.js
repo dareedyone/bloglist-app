@@ -34,6 +34,17 @@ blogsRouter.post("/", async (request, response) => {
 });
 
 blogsRouter.delete("/:id", async (req, res) => {
+	const { token } = req;
+
+	const decodedToken = token && (await jwt.verify(token, process.env.SECRET));
+	const blog = await Blog.findById(req.params.id);
+	if (
+		!decodedToken.id ||
+		decodedToken?.id?.toString() !== blog?.user?.toString()
+	) {
+		return res.status(401).send({ error: "You are not authorized!" });
+	}
+
 	await Blog.findByIdAndRemove(req.params.id);
 	res.status(204).end();
 });

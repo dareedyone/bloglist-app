@@ -51,9 +51,13 @@ blogsRouter.delete("/:id", async (req, res) => {
 });
 blogsRouter.put("/:id", async (req, res) => {
 	const {
-		body: { likes },
+		body,
 		params: { id },
 	} = req;
+	const { likes } = body;
+	if (!likes) {
+		return res.status(400).send({ error: "Invalid request" });
+	}
 
 	const updatedList = await Blog.findByIdAndUpdate(
 		id,

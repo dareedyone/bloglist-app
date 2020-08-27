@@ -28,9 +28,17 @@ blogsRouter.post("/", async (request, response) => {
 		likes,
 		user: user._id,
 	});
-	const savedBlog = await blog.save();
+	const savedBlog = await (await blog.save())
+		.populate("user", {
+			username: 1,
+			name: 1,
+			_id: 1,
+		})
+		.execPopulate();
+	savedBlog.user = user;
 	user.blogs = user.blogs.concat(savedBlog._id);
 	await user.save();
+
 	response.status(201).json(savedBlog);
 });
 
@@ -65,6 +73,15 @@ blogsRouter.put("/:id", async (req, res) => {
 		{ new: true }
 	);
 	res.json(updatedList);
+});
+
+blogsRouter.post("/:id/comments", async (req, res) => {
+	const { id } = req.params;
+	const { comment } = req.body;
+	const blog = await Blog.findById(id);
+	blog.comments = blog.comments.concat(comment);
+	await blog.save();
+	res.status(201).json(blog);
 });
 
 module.exports = blogsRouter;
